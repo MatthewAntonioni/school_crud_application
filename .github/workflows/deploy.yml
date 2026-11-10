@@ -1,0 +1,77 @@
+
+name: Deploy School CRUD Application
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Download repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Java
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: demo/pom.xml
+
+      # Build Spring Boot inside demo
+      - name: Build Spring Boot
+        working-directory: ./demo
+        run: |
+          chmod +x mvnw
+          ./mvnw --batch-mode clean package -DskipTests
+
+      # Prepare executable JAR
+      - name: Prepare JAR
+        run: |
+          JAR=$(find demo/target -maxdepth 1 -name '*.jar' \
+            ! -name '*.jar.original' \
+            ! -name '*-sources.jar' \
+            ! -name '*-javadoc.jar' \
+            | head -n 1)
+          test -n "$JAR"
+          cp "$JAR" app.jar
+
+      # Configure SSH
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      # Upload JAR to VPS
+      - name: Upload to VPS
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          rsync -avz app.jar \
+            "$SSH_USER@$SSH_HOST:/var/www/school_crud_application/app.jar"
+
+      # Restart Spring Boot application
+      - name: Restart Spring Boot
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          ssh "$SSH_USER@$SSH_HOST" \
+            "sudo -n systemctl restart school_crud_application"
