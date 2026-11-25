@@ -3,6 +3,7 @@ package com.example.demo.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate; //if you have a database entry that uses the date data type you need this or the server will crash
 
 @Entity 
 @Table(name = "staff") //table im referncing name
@@ -15,7 +16,7 @@ private String Email;
 private String Name;
 private String Password;
 private String Postiton;
-private String Date_hired;
+private LocalDate Date_hired;
 
 }
 
