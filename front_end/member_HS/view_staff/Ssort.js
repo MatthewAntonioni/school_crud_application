@@ -2,7 +2,7 @@ async function loadEntries(){
 
 console.log("JavaScript loaded");
 
-const responce = await fetch('https://www.dfg-h.com/api/S_table'); //this is telling the program where to get the data
+const responce = await fetch('https://74.208.119.86/api/S_table'); //this is telling the program where to get the data
 
 console.log("JavaScript loaded");
 
