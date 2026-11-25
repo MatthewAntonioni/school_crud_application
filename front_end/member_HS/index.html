@@ -13,6 +13,25 @@
     and a link to view the books in the library
 </h2>
 
+<p id="who"></p>
+<button onclick="logout()">Log out</button>
+
+<script>
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || user.role !== "member") {
+        location.href = "../login/index.html";
+    } else {
+        document.getElementById("who").textContent = "Logged in as " + user.name;
+    }
+
+    function logout() {
+        localStorage.removeItem("user");
+        location.href = "../login/index.html";
+    }
+</script>
+
 </body>
 
 </head>

@@ -116,9 +116,9 @@
     function loggedIn(user) {
         localStorage.setItem("user", JSON.stringify(user));
         if (user.role === "staff") {
-            location.href = "../staff_HS/";
+            location.href = "../staff_HS/index.html";
         } else {
-            location.href = "../member_HS/";
+            location.href = "../member_HS/index.html";
         }
     }
 

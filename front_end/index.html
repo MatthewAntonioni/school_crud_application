@@ -1,8 +1,8 @@
-<html>  
+<html>
 
-<head>  
+<head>
 
-<h1> stupid things</h1>
+    <h1> stupid things</h1>
 
 </head>
 
@@ -10,8 +10,16 @@
 
 <h2> this page will serve as a entrance to the site if anything is clicked it will give you a login page</h2>
 
+<a href="login/index.html">Log in</a>
+
+<script>
+    //brings u to login by clicking anywhere
+    document.addEventListener("click", () => {
+        location.href = "login/index.html";
+    });
+    document.body.style.cursor = "pointer"; // to show page is clickable
+
+</script>
 </body>
-
-
 
 </html>
