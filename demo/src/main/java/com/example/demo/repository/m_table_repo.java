@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface m_table_repo extends JpaRepository<m_table, Integer>{
  
-    @Query("select m.ID, m.Name, m.Date_joined, m.status form member m")
+    @Query("select m.ID, m.Name, m.Date_joined, m.Status from member m")
     List<Object[]> findAllNames();
 
 }
