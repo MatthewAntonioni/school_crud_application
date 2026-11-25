@@ -12,7 +12,7 @@ public interface s_table_repo extends JpaRepository<s_table, Integer> {
 
 //why we import jpa repo is because it gives access to a great many things we'd want to do in the database already
 
-@Query("select s.name,s.email,s.position from s_table s")
+@Query("select s.Name,s.Email,s.Position from s_table s")
 List<Object[]> findAllNames();
 
 
