@@ -2,7 +2,7 @@ async function loadEntries(){
 
 console.log("JavaScript loaded");
 
-const responce = await fetch('https://www.dfg-h.com/api/s_table'); //this is telling the program where to get the data
+const responce = await fetch('https://www.dfg-h.com/api/S_table'); //this is telling the program where to get the data
 
 console.log("JavaScript loaded");
 
@@ -10,7 +10,7 @@ const data = await responce.json(); //this is telling the program to wait until 
 
 console.log("JavaScript loaded");
 
-const table = document.getElementById("s_table"); //this tells the program where to put the data
+const table = document.getElementById("S_table"); //this tells the program where to put the data
 
 console.log("JavaScript loaded");
 

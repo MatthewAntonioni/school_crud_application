@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*; //give access to the get mappi
 import java.util.List;
 
 @RestController //this tells springboot that this class handles http requests and responses
-@RequestMapping("/api/s_table") //this sets the base URL for all endpoints in this controller
+@RequestMapping("/api/S_table") //this sets the base URL for all endpoints in this controller
 public class s_table_controller {
     
 private final s_table_repo repo; //this is the repository that will be used to access the database
