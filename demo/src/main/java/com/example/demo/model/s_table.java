@@ -15,7 +15,7 @@ private int ID;
 private String Email;
 private String Name;
 private String Password;
-private String Postiton;
+private String Position;
 private LocalDate Date_hired;
 
 }
