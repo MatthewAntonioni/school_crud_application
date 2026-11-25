@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library</title>
+    <style>
+        /* keeping it simple */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+
+        input, button {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0 12px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .tabs button {
+            display: inline-block;
+            width: auto;
+            margin-right: 5px;
+        }
+
+        .error {
+            color: #b00;
+        }
+
+        .ok {
+            color: #070;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Library</h1>
+
+<!-- buttons to switch between the 3 forms -->
+<div class="tabs">
+    <button onclick="show('memberForm')">Member login</button>
+    <button onclick="show('staffForm')">Staff login</button>
+    <button onclick="show('registerForm')">Register</button>
+</div>
+
+<!-- member login: id + password -->
+<form id="memberForm">
+    <h2>Member login</h2>
+    <label>Member ID <input id="memberId" placeholder="0000001" required></label>
+    <label>Password <input id="memberPassword" type="password" required></label>
+    <button type="submit">Log in</button>
+</form>
+
+<!-- staff login: email + password -->
+<form id="staffForm" hidden>
+    <h2>Staff login</h2>
+    <label>Email <input id="staffEmail" type="email" required></label>
+    <label>Password <input id="staffPassword" type="password" required></label>
+    <button type="submit">Log in</button>
+</form>
+
+<!-- register: name + password, they get their id after -->
+<form id="registerForm" hidden>
+    <h2>Register</h2>
+    <label>Full name <input id="regName" required></label>
+    <label>Password <input id="regPassword" type="password" required></label>
+    <label>Confirm password <input id="regPassword2" type="password" required></label>
+    <button type="submit">Create account</button>
+</form>
+
+<!-- error or success messages go here -->
+<p id="message"></p>
+
+<script>
+    // backend address: on dfg-h.com use the api, anywhere else (like localhost) use the same server
+    const API = location.hostname.endsWith("dfg-h.com") ? "https://api.dfg-h.com" : "";
+
+    // show one form and hide the other two
+    function show(formId) {
+        for (const id of ["memberForm", "staffForm", "registerForm"]) {
+            document.getElementById(id).hidden = (id !== formId);
+        }
+        message("");
+    }
+
+    // red for errors, green if ok = true
+    function message(text, ok) {
+        const m = document.getElementById("message");
+        m.textContent = text;
+        m.className = ok ? "ok" : "error";
+    }
+
+    // sends stuff to the backend and gets the answer back
+    async function post(path, data) {
+        const res = await fetch(API + path, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error || "Something went wrong");
+        return body;
+    }
+
+    // save who logged in (only in this browser) and send them to their home screen
+    // the home screens can read it back with JSON.parse(localStorage.getItem("user"))
+    function loggedIn(user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        if (user.role === "staff") {
+            location.href = "../staff_HS/";
+        } else {
+            location.href = "../member_HS/";
+        }
+    }
+
+    // member login button
+    document.getElementById("memberForm").addEventListener("submit", async e => {
+        e.preventDefault(); // stops the page from reloading
+        try {
+            const user = await post("/api/member/login", {
+                id: document.getElementById("memberId").value.trim(),
+                password: document.getElementById("memberPassword").value
+            });
+            loggedIn(user);
+        } catch (err) {
+            message(err.message);
+        }
+    });
+
+    // staff login button
+    document.getElementById("staffForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        try {
+            const user = await post("/api/staff/login", {
+                email: document.getElementById("staffEmail").value.trim(),
+                password: document.getElementById("staffPassword").value
+            });
+            loggedIn(user);
+        } catch (err) {
+            message(err.message);
+        }
+    });
+
+    // register button
+    document.getElementById("registerForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const p1 = document.getElementById("regPassword").value;
+        const p2 = document.getElementById("regPassword2").value;
+
+        // both passwords have to match
+        if (p1 !== p2) {
+            message("Passwords don't match");
+            return;
+        }
+
+        try {
+            const member = await post("/api/member/register", {
+                name: document.getElementById("regName").value,
+                password: p1
+            });
+            // go to member login with their new id already typed in
+            show("memberForm");
+            document.getElementById("memberId").value = member.id;
+            message("Registered! Your member ID is " + member.id + ". Write it down, then log in.", true);
+        } catch (err) {
+            message(err.message);
+        }
+    });
+
+    // if they were already logged in before, skip the login screen
+    // (logging out = localStorage.removeItem("user") then come back here)
+    const saved = localStorage.getItem("user");
+    if (saved) {
+        loggedIn(JSON.parse(saved));
+    }
+</script>
+
+</body>
+</html>
