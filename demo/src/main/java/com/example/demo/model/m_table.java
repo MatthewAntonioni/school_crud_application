@@ -15,6 +15,6 @@ private int ID;
 private String Password;
 private String Name;
 private LocalDate Date_joined;
-private String status;
+private String Status;
 
 }
