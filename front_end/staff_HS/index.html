@@ -2,7 +2,7 @@
 
 <head>
 
-<h1>staff home screen</h1>
+    <h1>staff home screen</h1>
 
 </head>
 
@@ -10,6 +10,25 @@
 
 <h2>here youll view a simple homescreen with links to the staff and members viewer and the book application page</h2>
 
+<p id="who"></p>
+<button onclick="logout()">Log out</button>
+
+<script>
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // nobody logged in, or not a staff, then back to login
+    if (!user || user.role !== "staff") {
+        location.href = "../login/index.html";
+    } else {
+        document.getElementById("who").textContent = "Logged in as " + user.name;
+    }
+
+    // forget who is logged in and go back to login
+    function logout() {
+        localStorage.removeItem("user");
+        location.href = "../login/index.html";
+    }
+</script>
 </body>
 
 </html>
