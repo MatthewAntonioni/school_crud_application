@@ -10,12 +10,14 @@ data.forEach(entry =>{
 
     const row = table.insertRow();
 
-    row.insertCell().textcontent = entry[0];
-    row.insertCell().textcontent = entry[1];
-    row.insertCell().textcontent = entry[2];
-    row.insertCell().textcontent = entry[3];
-    row.insertCell().textcontent = entry[4]; //this is telling the program to put the data in the first cell
+    row.insertCell().textContent = entry[0];
+    row.insertCell().textContent = entry[1];
+    row.insertCell().textContent = entry[2];
+    row.insertCell().textContent = entry[3];
+    row.insertCell().textContent = entry[4]; //this is telling the program to put the data in the first cell
 
 })
 
 }
+
+loadEntries();
