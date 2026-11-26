@@ -30,7 +30,7 @@ loadEntries();
 
 async function revokeMember(id){
 
-    const response = await fetch('https://api.dfg-h.com/api/M_table/${id}/revoke',{
+    const response = await fetch("https://api.dfg-h.com/api/M_table/"+ id +"/revoke",{
 
         method: "PATCH"
 
