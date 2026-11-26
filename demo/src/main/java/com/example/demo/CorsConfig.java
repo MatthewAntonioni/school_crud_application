@@ -18,7 +18,7 @@ public class CorsConfig {
                                 "https://dfg-h.com",
                                 "https://www.dfg-h.com"
                         )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
         };
