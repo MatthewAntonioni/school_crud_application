@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.repository.m_table_repo;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController 
@@ -21,6 +22,21 @@ this.repo = repo;
 public List<Object[]> getMember(){
 
 return repo.findAllNames();
+
+}
+
+@PatchMapping("/{id}/revoke")
+public ResponseEntity<Void> revokeMember(@PathVariable int id) {
+    
+int updated = repo.revokeMember(id);
+
+if(updated == 0){
+
+    return ResponseEntity.notFound().build(); //if the member is not found return 404
+
+}
+
+return ResponseEntity.noContent().build();
 
 }
 
